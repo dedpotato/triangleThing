@@ -3,27 +3,38 @@
 #include <iostream>
 #include <math.h>
 
+//codigo para crear circulo
 void
-dibujaCirculo(float r, int num_segments){
-glBegin(GL_POLYGON);
-    for(int ii = 0; ii < num_segments; ii++)
-    {
-        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
+crearCirculo(float *lista, float r, int num_segments){
+    for(int ii = 0; ii < num_segments; ii++){
+            float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
 
-        float x = r * cosf(theta);//calculate the x component
-        float y = r * sinf(theta);//calculate the y component
-
-        glVertex2f(x, y);//output vertex
-
-    }
-    glEnd();}
+            lista[ii*2] = r * cosf(theta);//calculate the x component
+            lista[(ii*2)+1] = r * sinf(theta);//calculate the y component
+        }
+}
 
 void
 dibujar(){
+    int segmentos = 16;
+
     glClear(GL_COLOR_BUFFER_BIT);
     glPushMatrix();
     glColor3f(1.0f,0.5f,0.0f);
-    dibujaCirculo(0.05f,16);
+
+    //segmentos x e y del circulo y el radio
+    float circulo[segmentos*2];
+    float radio = 0.05;
+
+    //crea una circulo basado en varias proporciones
+    crearCirculo(circulo,radio,segmentos);
+    //glTranslatef(0,0,0);
+
+    glBegin(GL_POLYGON);
+    for(int i = 0;i <=segmentos;i++){
+        glVertex2f(circulo[i*2], circulo[(i*2)+1]);
+    }
+    glEnd();
 
     glPopMatrix();
 
@@ -40,19 +51,9 @@ gatillo(){
     glLoadIdentity();
 }
 
-int aro=0, iter=5;
-float radio=0;
 void
 actualizacion(){
-    /*float theta = 2.0f * 3.1415926f * float(aro) / float(iter);//get the current angle
 
-        float x = radio * cosf(theta);//calculate the x component
-        float y = radio * sinf(theta);//calculate the y component
-
-        //glTranslatef(x, y,0.0f);
-        //glTranslatef(0,0,0);
-
-    aro=(aro+1)%iter;*/
     glutPostRedisplay();
 }
 
@@ -68,7 +69,6 @@ main(int argc, char * args[]){
     gatillo();
     glutIdleFunc(actualizacion);
     glutMainLoop();
-
 
     return 0;
 }
